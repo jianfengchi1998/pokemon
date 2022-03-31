@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PokemonResponse } from './interfaces/pokemon';
+import { Pokemon, PokemonResponse } from './interfaces/pokemon';
 import { PokemonservicesService } from './services/pokemonservices.service';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 
 
@@ -15,25 +15,27 @@ const starterPokemon = ["bulbasaur","squirtle","charmander","bulbasaur","squirtl
 export class AppComponent implements OnInit{
   title = 'pokemon';
 
-  pokemonArr: PokemonResponse[] = new Array(0);
+  pokemonArr: Pokemon[] = new Array(0);
   userSelected:boolean=false;
-  selectedPokemon !:PokemonResponse;
+  selectedPokemon !:Pokemon;
+  pokemonObs$ !: Observable<Pokemon[]>;
 
   constructor(private pokemonservice:PokemonservicesService){
 
   }
 
   ngOnInit(): void {
-
-    starterPokemon.forEach(element => {
-      this.pokemonservice.getPokemon(element).subscribe(
-        data=>{this.pokemonArr.push(data)}
-      )
-    });
+    this.pokemonObs$ = forkJoin(
+      starterPokemon.reduce((acc:any, pokemonName:string)=>{
+        return [
+          ...acc,
+          this.pokemonservice.getPokemon(pokemonName.toLowerCase())
+        ]
+      },[]) ) as Observable<Pokemon[]>;
   }
     
   
-  selected(pokemon:PokemonResponse){
+  selected(pokemon:Pokemon){
     this.pokemonArr = new Array(0);
     this.selectedPokemon = pokemon;
     this.userSelected = true;

@@ -70,3 +70,12 @@ export interface PokemonResponse {
       url: string;
     }
   }
+
+  export interface Pokemon {
+    id:number,
+    height:number,
+    weight:number,
+    typeArr:Type[],
+    frontimg:string,
+    species:Specie,
+  }

@@ -1,5 +1,5 @@
-<div class="cardContainer">
-    <pokemon-card *ngFor="let item of pokemonArr" [myPokemon]="item"
+<div class="cardContainer" *ngIf="!userSelected">
+    <pokemon-card *ngFor="let item of pokemonObs$|async" [myPokemon]="item"
         (selectedEmitter)="selected($event)"
         ></pokemon-card>
 </div>
@@ -7,7 +7,7 @@
 <ng-container *ngIf="userSelected">
     <div class="singleCardContainer">
     <div class="card">
-        <img [src]="selectedPokemon.sprites.front_default" class="card_image">
+        <img [src]="selectedPokemon.frontimg" class="card_image">
         <div class="container">
           <p class="card_name"><b>{{selectedPokemon.species?.name}}</b></p> 
           <ul class="card_list-nodot">
@@ -16,7 +16,7 @@
             <li>Height:{{selectedPokemon?.height}}</li>
           </ul> 
           <ul>
-            <li *ngFor="let item of selectedPokemon.types;">{{item.type.name}}</li>
+            <li *ngFor="let item of selectedPokemon.typeArr;">{{item.type.name}}</li>
           </ul>
         </div>
       </div>
